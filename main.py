@@ -2,6 +2,7 @@ import streamlit as st
 import torch.nn as nn
 import torch
 import numpy as np
+from PIL import Image
 
 class Generator(nn.Module):
     def __init__(self, channels_noise, channels_img, features_g):
@@ -54,9 +55,13 @@ columns = st.columns(5)
 
 if btn:
     for column in columns:
-        for j in range(5):
+        for j in range(4):
             noise = torch.randn(1, 100, 1, 1)
             img = gan(noise).detach().cpu().numpy()[0]
             img = np.moveaxis(img, 0, -1)
             img = (img - img.min()) / (img.max() - img.min())
-            column.image(img, use_column_width=True)
+            img = img * 255
+            img = img.astype(np.uint8)
+            img = Image.fromarray(img)
+            img = img.resize((240, 240), resample=Image.NEAREST)
+            column.image(img, width=200)
