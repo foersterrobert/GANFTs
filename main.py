@@ -37,7 +37,7 @@ class Generator(nn.Module):
     def forward(self, x):
         return self.gen(x)
 
-st.experimental_singleton
+st.experimental_singleton()
 def load_model():
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
     gan = Generator(256, 4, 24).to(device)
