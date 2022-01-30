@@ -54,15 +54,15 @@ btn = st.button("Generate")
 columns = st.columns(5)
 
 if btn:
-    for column in columns:
-        for j in range(8):
-            noise = torch.randn(1, 256, 1, 1)
-            fake = gan(noise)
-            img = fake.detach().cpu().numpy()[0]
-            img = np.moveaxis(img, 0, -1)
-            img = (img - img.min()) / (img.max() - img.min())
-            img = img * 255
-            img = img.astype(np.uint8)
-            img = Image.fromarray(img)
+    noise = torch.randn(len(columns) * 4, 256, 1, 1)
+    fake = gan(noise)
+    imgs = fake.detach().cpu().numpy()
+    imgs = (imgs - imgs.min()) / (imgs.max() - imgs.min())
+    imgs = np.moveaxis(imgs, 1, -1)
+    imgs = imgs * 255
+    for idx, column in enumerate(columns):
+        for j in range(4):
+            img = imgs[idx*4+j]
+            img = Image.fromarray(img.astype(np.uint8))
             img = img.resize((240, 240), resample=Image.NEAREST)
             column.image(img, width=200)
